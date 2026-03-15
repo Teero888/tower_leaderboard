@@ -11,7 +11,9 @@ function App() {
   const [realPlayers, setRealPlayers] = useState<Player[]>([]);
   const [startTile, setStartTile] = useState(120.7);
   const [tileIncrement, setTileIncrement] = useState(17.998);
-  const [boxOffset, setBoxOffset] = useState(15.0);
+  const [boxOffset, setBoxOffset] = useState(23.0);
+  const [lineWidth, setLineWidth] = useState(25.0);
+  const [podiumOffset, setPodiumOffset] = useState(1.155);
   const [debug, setDebug] = useState(false);
 
   // Expose toggle to console
@@ -84,8 +86,6 @@ function App() {
 
   return (
     <div className={`container ${debug ? 'debug-mode' : ''}`}>
-      <div className="background-overlay"></div>
-
       {debug && (
         <div className="controls-panel">
           <div className="control-group">
@@ -105,11 +105,27 @@ function App() {
             />
           </div>
           <div className="control-group">
-            <label>Box Offset: {boxOffset.toFixed(1)}%</label>
+            <label>Box Offset: {boxOffset.toFixed(1)}</label>
             <input 
-              type="range" min="0" max="45" step="0.1" 
+              type="range" min="0" max="100" step="0.1" 
               value={boxOffset} 
               onChange={(e) => setBoxOffset(Number(e.target.value))} 
+            />
+          </div>
+          <div className="control-group">
+            <label>Line Width: {lineWidth.toFixed(1)}</label>
+            <input 
+              type="range" min="0" max="50" step="0.1" 
+              value={lineWidth} 
+              onChange={(e) => setLineWidth(Number(e.target.value))} 
+            />
+          </div>
+          <div className="control-group">
+            <label>Podium Y: {podiumOffset.toFixed(3)}%</label>
+            <input 
+              type="range" min="0" max="10" step="0.001" 
+              value={podiumOffset} 
+              onChange={(e) => setPodiumOffset(Number(e.target.value))} 
             />
           </div>
           <div className="control-info">
@@ -117,63 +133,74 @@ function App() {
           </div>
         </div>
       )}
-      
-      <div className="tower-markers">
-        {sortedFloors.map((floor) => (
-          <div 
-            key={floor} 
-            className={`floor-marker ${floor % 2 !== 0 ? 'left' : 'right'}`}
-            style={{ 
-              top: `${calculateFloorTop(floor)}%`,
-              [floor % 2 !== 0 ? 'left' : 'right']: `${boxOffset}%`
-            }}
-          >
-            <div className="floor-box">
-              <div className="floor-label">Floor {floor}</div>
-              <div className="floor-players">
-                {playersByFloor[floor] && playersByFloor[floor].map(player => (
-                  <div key={player.playerName} className="floor-player">
-                    <span className="player-rank">#{player.rank}</span>
-                    <a href={getPlayerLink(player.playerName)} target="_blank" rel="noreferrer">
-                      {player.playerName}
-                    </a>
+
+      <div className="tower-section" style={{ 
+        '--line-width': `${lineWidth}%`,
+        '--podium-offset': `${podiumOffset}%`
+      } as any}>
+        <div className="background-overlay"></div>
+        
+        <header>
+          <h1>Tower Event Leaderboard</h1>
+        </header>
+
+        <main className="podium-area">
+          {players.length > 0 && (
+            <section className="podium-section">
+              <div className="podium">
+                {podiumOrder.map((player) => (
+                  <div key={player.playerName} className={`podium-item rank-${player.displayRank}`}>
+                    <div className={`medal medal-${player.displayRank}`}>
+                      <span className="medal-rank">{player.rank}</span>
+                    </div>
+                    <div className="podium-pillar">
+                      <a href={getPlayerLink(player.playerName)} target="_blank" rel="noreferrer" className="player-name">
+                        {player.playerName}
+                      </a>
+                      <div className="floor-count">Floor {player.floorReached}</div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        ))}
+            </section>
+          )}
+        </main>
+
+        <div className="tower-markers">
+          {sortedFloors.map((floor) => {
+            const isLeft = floor % 2 !== 0;
+            return (
+              <div 
+                key={floor} 
+                className={`floor-marker ${isLeft ? 'left' : 'right'}`}
+                style={{ 
+                  top: `${calculateFloorTop(floor)}%`,
+                  left: isLeft ? `calc(50% - ${boxOffset}%)` : `calc(50% + ${boxOffset}%)`,
+                  transform: `translate(${isLeft ? '-100%' : '0'}, -50%)`
+                } as any}
+              >
+                <div className="floor-box">
+                  <div className="floor-label">Floor {floor}</div>
+                  <div className="floor-players">
+                    {playersByFloor[floor] && playersByFloor[floor].map(player => (
+                      <div key={player.playerName} className="floor-player">
+                        <span className="player-rank">#{player.rank}</span>
+                        <a href={getPlayerLink(player.playerName)} target="_blank" rel="noreferrer">
+                          {player.playerName}
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
       <div className="discord-notice">
         <span>Missing or incorrect rank? Contact <strong>teero777</strong> on Discord</span>
       </div>
-
-      <header>
-        <h1>Tower Event Leaderboard</h1>
-      </header>
-
-      <main className="map-layout">
-        {players.length > 0 && (
-          <section className="podium-section">
-            <div className="podium">
-              {podiumOrder.map((player) => (
-                <div key={player.playerName} className={`podium-item rank-${player.displayRank}`}>
-                  <div className={`medal medal-${player.displayRank}`}>
-                    <span className="medal-rank">{player.rank}</span>
-                  </div>
-                  <div className="podium-pillar">
-                    <a href={getPlayerLink(player.playerName)} target="_blank" rel="noreferrer" className="player-name">
-                      {player.playerName}
-                    </a>
-                    <div className="floor-count">Floor {player.floorReached}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
     </div>
   )
 }
