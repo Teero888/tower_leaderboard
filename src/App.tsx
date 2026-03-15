@@ -140,10 +140,6 @@ function App() {
       } as any}>
         <div className="background-overlay"></div>
         
-        <header>
-          <h1>Tower Event Leaderboard</h1>
-        </header>
-
         <main className="podium-area">
           {players.length > 0 && (
             <section className="podium-section">
