@@ -1,0 +1,258 @@
+#root {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container {
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: #1a1a1a;
+  color: white;
+  overflow-x: hidden;
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/logo.png'); /* Assumes logo.png is in public/ folder */
+  background-size: auto 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
+}
+
+header {
+  z-index: 1;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 3.5rem;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  margin: 0;
+}
+
+main {
+  z-index: 1;
+  width: 100%;
+  max-width: 1000px;
+}
+
+/* Podium Styles */
+.podium-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 5rem;
+  padding-top: 2rem;
+}
+
+.podium {
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  height: 400px;
+}
+
+.podium-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  animation: slideUp 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+  will-change: transform, opacity;
+}
+
+.podium-pillar {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.podium-pillar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+}
+
+.rank-1 .podium-pillar { height: 280px; background: linear-gradient(to bottom, rgba(255, 215, 0, 0.15), rgba(255, 215, 0, 0.05)); border-color: rgba(255, 215, 0, 0.3); }
+.rank-2 .podium-pillar { height: 220px; background: linear-gradient(to bottom, rgba(192, 192, 192, 0.15), rgba(192, 192, 192, 0.05)); border-color: rgba(192, 192, 192, 0.3); }
+.rank-3 .podium-pillar { height: 170px; background: linear-gradient(to bottom, rgba(205, 127, 50, 0.15), rgba(205, 127, 50, 0.05)); border-color: rgba(205, 127, 50, 0.3); }
+
+/* Custom Medals */
+.medal {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -15px;
+  z-index: 2;
+  font-weight: bold;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.medal-1 {
+  background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+  color: #5c4300;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+  width: 75px;
+  height: 75px;
+  font-size: 2rem;
+}
+
+.medal-2 {
+  background: linear-gradient(135deg, #e0e0e0 0%, #808080 100%);
+  color: #333;
+}
+
+.medal-3 {
+  background: linear-gradient(135deg, #cd7f32 0%, #8b4513 100%);
+  color: #3d1e09;
+}
+
+.medal-rank {
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.player-name {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  transition: color 0.2s;
+}
+
+.player-name:hover {
+  color: #646cff;
+}
+
+.floor-count {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
+/* Table Styles */
+.list-section {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(5px);
+  border-radius: 15px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.leaderboard-table th {
+  padding: 12px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  opacity: 0.7;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.leaderboard-table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-table tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-table a {
+  color: #8ab4f8;
+  text-decoration: none;
+}
+
+.leaderboard-table a:hover {
+  text-decoration: underline;
+}
+
+.discord-notice {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.7rem 1.4rem;
+  border-radius: 40px;
+  font-size: 0.85rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+  animation: slideInRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.discord-notice strong {
+  color: #5865F2;
+  text-shadow: 0 0 10px rgba(88, 101, 242, 0.3);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    transform: translateY(60px) scale(0.95); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0) scale(1); 
+    opacity: 1; 
+  }
+}
+
+@media (max-width: 600px) {
+  header h1 { font-size: 2rem; }
+  .podium { gap: 10px; height: 300px; }
+  .podium-item { width: 100px; }
+  .rank-1 .podium-pillar { height: 200px; }
+  .rank-2 .podium-pillar { height: 160px; }
+  .rank-3 .podium-pillar { height: 130px; }
+  .medal { font-size: 2rem; }
+  .player-name { font-size: 0.9rem; }
+}
