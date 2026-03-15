@@ -56,7 +56,6 @@ function App() {
   }, [realPlayers, debug]);
 
   const topThree = players.slice(0, 3);
-  const rest = players.slice(3);
 
   // Reorder for podium: [2nd, 1st, 3rd]
   const podiumOrder = [];
