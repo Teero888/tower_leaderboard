@@ -4,7 +4,7 @@
 }
 
 .container {
-  min-height: 100vh;
+  min-height: calc(100vw * (16384 / 2300)); /* Matches the aspect ratio of the tower image */
   width: 100vw;
   position: relative;
   display: flex;
@@ -18,18 +18,63 @@
 }
 
 .background-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/logo.png'); /* Assumes logo.png is in public/ folder */
-  background-size: auto 100%;
-  background-position: center;
+  background-image: url('/The_Tower_2300x16384.png');
+  background-size: 100% auto; /* Fit to width, auto height */
+  background-position: top center;
   background-repeat: no-repeat;
-  opacity: 0.15;
+  opacity: 0.4; /* Slightly more visible for the detailed tower */
   z-index: 0;
   pointer-events: none;
+}
+
+.controls-panel {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 250px;
+  opacity: 0.3;
+  transition: opacity 0.3s;
+}
+
+.controls-panel:hover {
+  opacity: 1;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.control-group label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #ffcc00;
+}
+
+.control-group input {
+  width: 100%;
+}
+
+.control-info {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  font-style: italic;
+  margin-top: 0.5rem;
 }
 
 header {
@@ -167,45 +212,155 @@ main {
   opacity: 0.8;
 }
 
-/* Table Styles */
-.list-section {
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(5px);
-  border-radius: 15px;
-  padding: 1.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.leaderboard-table {
+/* Map Layout Styles */
+.map-layout {
+  z-index: 1;
   width: 100%;
-  border-collapse: collapse;
-  text-align: left;
+  position: relative;
+  max-width: 100%;
 }
 
-.leaderboard-table th {
-  padding: 12px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  opacity: 0.7;
-  font-size: 0.9rem;
+.tower-markers {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* The horizontal measurement line (only in debug mode) */
+.debug-mode .floor-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%; /* Center vertically within the marker */
+  transform: translateY(-50%);
+  left: -50vw; /* Extend beyond the marker width */
+  right: -50vw;
+  height: 1px;
+  background: rgba(255, 204, 0, 0.4);
+  z-index: -1;
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.2);
+}
+
+.floor-marker {
+  position: absolute;
+  width: auto;
+  min-width: 250px;
+  pointer-events: auto;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+}
+
+.floor-marker.left {
+  align-items: flex-end;
+}
+
+.floor-marker.right {
+  align-items: flex-start;
+}
+
+.floor-box {
+  background: rgba(0, 0, 0, 0.15); /* Barely any backdrop */
+  backdrop-filter: blur(2px); /* Minimal blur */
+  -webkit-backdrop-filter: blur(2px);
+  padding: 5px 12px;
+  position: relative;
+  min-height: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* The Claw Effect (Vertical Bar) */
+.floor-marker.right .floor-box {
+  border-left: 2px solid rgba(255, 204, 0, 0.8);
+}
+
+.floor-marker.left .floor-box {
+  border-right: 2px solid rgba(255, 204, 0, 0.8);
+}
+
+/* The Claw Effect (Horizontal segments) */
+.floor-box::before, .floor-box::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 2px;
+  background: rgba(255, 204, 0, 0.8);
+}
+
+/* Right marker claws */
+.floor-marker.right .floor-box::before { top: 0; left: 0; }
+.floor-marker.right .floor-box::after { bottom: 0; left: 0; }
+
+/* Left marker claws */
+.floor-marker.left .floor-box::before { top: 0; right: 0; }
+.floor-marker.left .floor-box::after { bottom: 0; right: 0; }
+
+/* Connector Line (The middle part of the claw) */
+.floor-marker::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 2px;
+  background: rgba(255, 204, 0, 0.8);
+  z-index: 1;
+}
+
+.floor-marker.left::before {
+  right: -45px;
+}
+
+.floor-marker.right::before {
+  left: -45px;
+}
+
+.floor-label {
+  font-weight: bold;
+  color: #ffcc00;
+  font-size: 0.85rem;
+  margin-bottom: 2px;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.leaderboard-table td {
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+.floor-players {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.leaderboard-table tr:hover {
-  background: rgba(255, 255, 255, 0.05);
+.floor-player {
+  font-size: 1rem;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-.leaderboard-table a {
+.floor-marker.left .floor-player {
+  flex-direction: row-reverse;
+}
+
+.player-rank {
+  opacity: 0.6;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.floor-players a {
   color: #8ab4f8;
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-.leaderboard-table a:hover {
-  text-decoration: underline;
+.floor-players a:hover {
+  color: white;
+  text-shadow: 0 0 10px rgba(138, 180, 248, 0.5);
 }
 
 .discord-notice {
